@@ -15,8 +15,10 @@ function Gameboard() {
     const placeSelection = (row, column, player) => {
         if (board[row][column].getValue() !== 0) {
             console.log("Square has already been selected");
+            return false;
         } else {
             board[row][column].playerChoice(player);
+            return true;
         }
     };
 
@@ -78,13 +80,13 @@ function GameController(
         console.log(
             `${getActivePlayer().name}'s chooses to play ${getActivePlayer().token} into [${row}, ${column}]`
         );
-        board.placeSelection(row, column, getActivePlayer().token);
+        // board.placeSelection(row, column, getActivePlayer().token);
 
         /*  This is where we would check for a winner and handle that logic,
               such as a win message. */
 
         // Switch player turn if cell was empty when selected
-        if (board.getBoard()[row][column].getValue() !== 0) {
+        if (!board.placeSelection(row, column, getActivePlayer().token)) {
             return;
         } else {
             switchPlayerTurn();
