@@ -13,7 +13,7 @@ function Gameboard() {
     const getBoard = () => board;
 
     const placeSelection = (row, column, player) => {
-        if (board[row][column].getValue() !== 0) {
+        if (board[row][column].getValue() !== ' ') {
             console.log("Square has already been selected");
             return false;
         } else {
@@ -27,13 +27,14 @@ function Gameboard() {
             row.map((cell) => cell.getValue())
         );
         console.log(boardWithCellValues);
+        return boardWithCellValues;
     };
 
     return { getBoard, placeSelection, printBoard };
 }
 
 function Cell() {
-    let value = 0;
+    let value = ' ';
 
     const playerChoice = (player) => {
         value = player;
@@ -80,19 +81,27 @@ function GameController(
         console.log(
             `${getActivePlayer().name}'s chooses to play ${getActivePlayer().token} into [${row}, ${column}]`
         );
-        // board.placeSelection(row, column, getActivePlayer().token);
-
-        /*  This is where we would check for a winner and handle that logic,
-              such as a win message. */
 
         // Switch player turn if cell was empty when selected
-        if (!board.placeSelection(row, column, getActivePlayer().token)) {
+        const isValidMove = board.placeSelection(row, column, getActivePlayer().token);
+
+        if (!isValidMove) {
             return;
         } else {
-            switchPlayerTurn();
-            printNewRound();
+            const boardSelectionValueRow = board.getBoard()[row].map((rowSquareValue) => rowSquareValue === ' ' ? false : rowSquareValue.getValue());
+
+            if (boardSelectionValueRow.join('') === 'XXX' || boardSelectionValueRow.join('') === 'OOO') {
+                board.printBoard();
+                return console.log(`${getActivePlayer().name} wins!`);
+            } else {
+                switchPlayerTurn();
+                printNewRound();
+            }
         }
-    };
+    }
+
+    /*  This is where we would check for a winner and handle that logic,
+          such as a win message. */
 
     // Initial play game message
     printNewRound();
@@ -103,6 +112,7 @@ function GameController(
         playRound,
         getActivePlayer,
     };
-}
+};
+
 
 const game = GameController();
