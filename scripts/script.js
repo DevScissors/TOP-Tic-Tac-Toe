@@ -157,67 +157,12 @@ function GameController(
     } else {
       if (winningScenario()) {
         printWinningRound();
-        // }
-        // if(board.getBoard()[0][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][0].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the left column`);
-        //     printNewRound();
-        // } else if (board.getBoard()[0][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][1].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the middle column`);
-        //     printNewRound();
-        // } else if (board.getBoard()[0][2].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][2].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][2].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the right column`);
-        //     printNewRound();
-        // } else if (board.getBoard()[0][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[0][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[0][2].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the top row`);
-        //     printNewRound();
-        // } else if (board.getBoard()[1][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][2].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the middle row`);
-        //     printNewRound();
-        // } else if (board.getBoard()[2][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][2].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins in the bottom row`);
-        //     printNewRound();
-        // } else if (board.getBoard()[0][0].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][2].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins diagonally left to right`);
-        //     printNewRound();
-        // } else if (board.getBoard()[0][2].getValue() === getActivePlayer().token &&
-        // board.getBoard()[1][1].getValue() === getActivePlayer().token &&
-        // board.getBoard()[2][0].getValue() === getActivePlayer().token) {
-        //     console.log(`${getActivePlayer().name} wins diagonally right to left`);
-        //     printNewRound();
-        // const boardSelectionValueRow = board.getBoard()[row].map((rowSquareValue) => rowSquareValue === ' ' ? false : rowSquareValue.getValue());
-        // const boardRowOneColumnOne = board.getBoard()[0][1].getValue();
-        // const boardRowTwoColumnOne = board.getBoard()[1][1].getValue();
-        // const boardRowThreeColumnOne = board.getBoard()[2][1].getValue();
-
-        // if(boardRowOneColumnOne === 'X' && boardRowTwoColumnOne === 'X' && boardRowThreeColumnOne === 'X') {
-        //     board.printBoard();
-        //     return console.log(`${getActivePlayer().name} wins!`);
-        // if (boardSelectionValueRow.join('') === 'XXX' || boardSelectionValueRow.join('') === 'OOO') {
-        //     board.printBoard();
-        //     return console.log(`${getActivePlayer().name} wins!`);
       } else {
         switchPlayerTurn();
         printNewRound();
       }
     }
   };
-
-  /*  This is where we would check for a winner and handle that logic,
-          such as a win message. */
 
   // Initial play game message
   printNewRound();
