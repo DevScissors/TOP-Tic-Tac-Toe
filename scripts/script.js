@@ -87,53 +87,45 @@ function GameController(
         if (!isValidMove) {
             return;
         } else {
-            if(board.getBoard()[0][0].getValue() === 'X' && board.getBoard()[1][0].getValue() === 'X' && board.getBoard()[2][0].getValue() === 'X') {
-                console.log('X wins in the left column');
+            if(board.getBoard()[0][0].getValue() === getActivePlayer().token &&
+            board.getBoard()[1][0].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][0].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the left column`);
                 printNewRound();
-            } else if (board.getBoard()[0][1].getValue() === 'X' && board.getBoard()[1][1].getValue() === 'X' && board.getBoard()[2][1].getValue() === 'X') {
-                console.log('X wins in the middle column');
+            } else if (board.getBoard()[0][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][1].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the middle column`);
                 printNewRound();
-            } else if (board.getBoard()[0][2].getValue() === 'X' && board.getBoard()[1][2].getValue() === 'X' && board.getBoard()[2][2].getValue() === 'X') {
-                console.log('X wins in the right column');
+            } else if (board.getBoard()[0][2].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][2].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][2].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the right column`);
                 printNewRound();
-            } else if (board.getBoard()[0][0].getValue() === 'X' && board.getBoard()[0][1].getValue() === 'X' && board.getBoard()[0][2].getValue() === 'X') {
-                console.log('X wins in the top row');
+            } else if (board.getBoard()[0][0].getValue() === getActivePlayer().token && 
+            board.getBoard()[0][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[0][2].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the top row`);
                 printNewRound();
-            } else if (board.getBoard()[1][0].getValue() === 'X' && board.getBoard()[1][1].getValue() === 'X' && board.getBoard()[1][2].getValue() === 'X') {
-                console.log('X wins in the middle row');
+            } else if (board.getBoard()[1][0].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][2].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the middle row`);
                 printNewRound();
-            } else if (board.getBoard()[2][0].getValue() === 'X' && board.getBoard()[2][1].getValue() === 'X' && board.getBoard()[2][2].getValue() === 'X') {
-                console.log('X wins in the bottom row');
+            } else if (board.getBoard()[2][0].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][2].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins in the bottom row`);
                 printNewRound();
-            } else if (board.getBoard()[0][0].getValue() === 'X' && board.getBoard()[1][1].getValue() === 'X' && board.getBoard()[2][2].getValue() === 'X') {
-                console.log('X wins diagonally left to right');
+            } else if (board.getBoard()[0][0].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][2].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins diagonally left to right`);
                 printNewRound();
-            } else if (board.getBoard()[0][2].getValue() === 'X' && board.getBoard()[1][1].getValue() === 'X' && board.getBoard()[2][0].getValue() === 'X') {
-                console.log('X wins diagonally right to left');
-                printNewRound();
-            } else if(board.getBoard()[0][0].getValue() === 'O' && board.getBoard()[1][0].getValue() === 'O' && board.getBoard()[2][0].getValue() === 'O') {
-                console.log('O wins in the left column');
-                printNewRound();
-            } else if (board.getBoard()[0][1].getValue() === 'O' && board.getBoard()[1][1].getValue() === 'O' && board.getBoard()[2][1].getValue() === 'O') {
-                console.log('O wins in the middle column');
-                printNewRound();
-            } else if (board.getBoard()[0][2].getValue() === 'O' && board.getBoard()[1][2].getValue() === 'O' && board.getBoard()[2][2].getValue() === 'O') {
-                console.log('O wins in the right column');
-                printNewRound();
-            } else if (board.getBoard()[0][0].getValue() === 'O' && board.getBoard()[0][1].getValue() === 'O' && board.getBoard()[0][2].getValue() === 'O') {
-                console.log('O wins in the top row');
-                printNewRound();
-            } else if (board.getBoard()[1][0].getValue() === 'O' && board.getBoard()[1][1].getValue() === 'O' && board.getBoard()[1][2].getValue() === 'O') {
-                console.log('O wins in the middle row');
-                printNewRound();
-            } else if (board.getBoard()[2][0].getValue() === 'O' && board.getBoard()[2][1].getValue() === 'O' && board.getBoard()[2][2].getValue() === 'O') {
-                console.log('O wins in the bottom row');
-                printNewRound();
-            } else if (board.getBoard()[0][0].getValue() === 'O' && board.getBoard()[1][1].getValue() === 'O' && board.getBoard()[2][2].getValue() === 'O') {
-                console.log('O wins diagonally left to right');
-                printNewRound();
-            } else if (board.getBoard()[0][2].getValue() === 'O' && board.getBoard()[1][1].getValue() === 'O' && board.getBoard()[2][0].getValue() === 'O') {
-                console.log('O wins diagonally right to left');
+            } else if (board.getBoard()[0][2].getValue() === getActivePlayer().token && 
+            board.getBoard()[1][1].getValue() === getActivePlayer().token && 
+            board.getBoard()[2][0].getValue() === getActivePlayer().token) {
+                console.log(`${getActivePlayer().token} wins diagonally right to left`);
                 printNewRound();
             // const boardSelectionValueRow = board.getBoard()[row].map((rowSquareValue) => rowSquareValue === ' ' ? false : rowSquareValue.getValue());
             // const boardRowOneColumnOne = board.getBoard()[0][1].getValue();
