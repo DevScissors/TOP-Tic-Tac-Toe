@@ -82,17 +82,22 @@ function GameController(
             `${getActivePlayer().name}'s chooses to play ${getActivePlayer().token} into [${row}, ${column}]`
         );
 
-        // Switch player turn if cell was empty when selected
         const isValidMove = board.placeSelection(row, column, getActivePlayer().token);
 
         if (!isValidMove) {
             return;
         } else {
-            const boardSelectionValueRow = board.getBoard()[row].map((rowSquareValue) => rowSquareValue === ' ' ? false : rowSquareValue.getValue());
+            // const boardSelectionValueRow = board.getBoard()[row].map((rowSquareValue) => rowSquareValue === ' ' ? false : rowSquareValue.getValue());
+            const boardRowOneColumnOne = board.getBoard()[0][1].getValue();
+            const boardRowTwoColumnOne = board.getBoard()[1][1].getValue();
+            const boardRowThreeColumnOne = board.getBoard()[2][1].getValue();
 
-            if (boardSelectionValueRow.join('') === 'XXX' || boardSelectionValueRow.join('') === 'OOO') {
+            if(boardRowOneColumnOne === 'X' && boardRowTwoColumnOne === 'X' && boardRowThreeColumnOne === 'X') {
                 board.printBoard();
                 return console.log(`${getActivePlayer().name} wins!`);
+            // if (boardSelectionValueRow.join('') === 'XXX' || boardSelectionValueRow.join('') === 'OOO') {
+            //     board.printBoard();
+            //     return console.log(`${getActivePlayer().name} wins!`);
             } else {
                 switchPlayerTurn();
                 printNewRound();
