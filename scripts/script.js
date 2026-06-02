@@ -1,3 +1,73 @@
+// ============================================
+// CELL FACTORY
+// ============================================
+function Cell() {
+  let value = " ";
+
+  const setValue = (player) => {
+    value = player;
+  };
+
+  const getValue = () => value;
+
+  const isEmpty = () => value === " ";
+
+  return {
+    setValue,
+    getValue,
+    isEmpty,
+  };
+}
+
+// ===========================================
+// WINNING LINE PATTERNS
+// ===========================================
+const WIN_PATTERNS = {
+  "top row": [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  "middle row": [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  "bottom row": [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  "left column": [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  "middle column": [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  "right column": [
+    [0, 2],
+    [1, 2],
+    [2, 2],
+  ],
+  "diagonal right": [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  "diagonal left": [
+    [0, 2],
+    [1, 1],
+    [2, 0],
+  ],
+};
+
+// ============================================
+// GAMEBOARD FACTORY
+// ============================================
 function GameBoard() {
   const rows = 3;
   const columns = 3;
@@ -16,11 +86,13 @@ function GameBoard() {
     if (board[row][column].getValue() !== " ") {
       console.log("Square has already been selected");
       return false;
-    } else {
-      board[row][column].setValue(player);
-      return true;
     }
+    board[row][column].setValue(player);
+    return true;
   };
+
+  const isBoardFull = () =>
+    board.every((row) => row.every((cell) => cell.getValue() !== " "));
 
   const printBoard = () => {
     const boardWithCellValues = board.map((row) =>
@@ -30,24 +102,12 @@ function GameBoard() {
     return boardWithCellValues;
   };
 
-  return { getBoard, placeMarker, printBoard };
+  return { getBoard, isBoardFull, placeMarker, printBoard };
 }
 
-function Cell() {
-  let value = " ";
-
-  const setValue = (player) => {
-    value = player;
-  };
-
-  const getValue = () => value;
-
-  return {
-    setValue,
-    getValue,
-  };
-}
-
+// ============================================
+// GAME CONTROLLER FACTORY
+// ============================================
 function GameController(
   playerOneName = "Player One",
   playerTwoName = "Player Two",
@@ -66,74 +126,36 @@ function GameController(
   ];
 
   let activePlayer = players[0];
+  let gameOver = false;
+
+  // ---- STATE & GETTERS ----
+  const getActivePlayer = () => activePlayer;
 
   const switchPlayerTurn = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
-  const getActivePlayer = () => activePlayer;
 
-  const printNewRound = () => {
-    board.printBoard();
-    console.log(`${getActivePlayer().name}'s turn.`);
-  };
-
+  // ---- WIN CONDITION CHECKS ----
   const findWinningLine = () => {
-    const winCase = {
-      "top row": [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-      ],
-      "middle row": [
-        [1, 0],
-        [1, 1],
-        [1, 2],
-      ],
-      "bottom row": [
-        [2, 0],
-        [2, 1],
-        [2, 2],
-      ],
-      "left column": [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-      ],
-      "middle column": [
-        [0, 1],
-        [1, 1],
-        [2, 1],
-      ],
-      "right column": [
-        [0, 2],
-        [1, 2],
-        [2, 2],
-      ],
-      "diagonal right": [
-        [0, 0],
-        [1, 1],
-        [2, 2],
-      ],
-      "diagonal left": [
-        [0, 2],
-        [1, 1],
-        [2, 0],
-      ],
-    };
-
-    // checks if the board value matches every cell coordinate (value)
-    // from any winning line (key) in the winCase object
-    for (const [key, array] of Object.entries(winCase)) {
+    for (const [key, array] of Object.entries(WIN_PATTERNS)) {
       if (
         array.every(
           ([row, col]) =>
             board.getBoard()[row][col].getValue() === getActivePlayer().token,
         )
       ) {
-        return key; // Returns "top row", "left column", etc.
+        return key;
       }
     }
-    return null; // No winning scenario
+    return null;
+  };
+
+  const tieGame = () => board.isBoardFull() && findWinningLine() === null;
+
+  // ---- OUTPUT & DISPLAY ----
+  const printNewRound = () => {
+    board.printBoard();
+    console.log(`${getActivePlayer().name}'s turn.`);
   };
 
   const printWinningRound = () => {
@@ -143,49 +165,54 @@ function GameController(
     );
   };
 
-  const tieGame = () => {
-    const isBoardFull = board
-      .getBoard()
-      .every((row) => row.every((cell) => cell.getValue() !== " "));
-
-    return isBoardFull;
-  };
-
   const printTieGame = () => {
     board.printBoard();
     console.log("Nobody wins! It's a cats game (tie game)");
   };
 
+  // ---- GAME ACTIONS ----
   const playRound = (row, column) => {
+    if (gameOver) {
+      return;
+    }
+
+    const currentPlayer = getActivePlayer();
+
     console.log(
-      `${getActivePlayer().name}'s chooses to play ${getActivePlayer().token} into [${row}, ${column}]`,
+      `${currentPlayer.name}'s chooses to play ${currentPlayer.token} into [${row}, ${column}]`,
     );
 
-    const isValidMove = board.placeMarker(row, column, getActivePlayer().token);
+    const isValidMove = board.placeMarker(row, column, currentPlayer.token);
 
     if (!isValidMove) {
       return;
-    } else {
-      if (findWinningLine()) {
-        printWinningRound();
-      } else if (tieGame()) {
-        printTieGame();
-      } else {
-        switchPlayerTurn();
-        printNewRound();
-      }
     }
-  };
 
-  // Initial play game message
-  printNewRound();
+    if (findWinningLine()) {
+      gameOver = true;
+      printWinningRound();
+      return;
+    }
 
-  // For the console version, we will only use playRound, but we will need
-  // getActivePlayer for the UI version, so I'm revealing it now
-  return {
-    playRound,
-    getActivePlayer,
+    if (tieGame()) {
+      gameOver = true;
+      printTieGame();
+      return;
+    }
+    switchPlayerTurn();
+    printNewRound();
+
+    // ---- INITIALIZATION ----
+    printNewRound();
+
+    return {
+      playRound,
+      getActivePlayer,
+    };
   };
 }
 
+// ============================================
+// GAME INSTANCE
+// ============================================
 const game = GameController();
