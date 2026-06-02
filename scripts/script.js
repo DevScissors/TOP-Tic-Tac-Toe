@@ -1,4 +1,4 @@
-function Gameboard() {
+function GameBoard() {
   const rows = 3;
   const columns = 3;
   const board = [];
@@ -12,12 +12,12 @@ function Gameboard() {
 
   const getBoard = () => board;
 
-  const placeSelection = (row, column, player) => {
+  const placeMarker = (row, column, player) => {
     if (board[row][column].getValue() !== " ") {
       console.log("Square has already been selected");
       return false;
     } else {
-      board[row][column].playerChoice(player);
+      board[row][column].setValue(player);
       return true;
     }
   };
@@ -30,20 +30,20 @@ function Gameboard() {
     return boardWithCellValues;
   };
 
-  return { getBoard, placeSelection, printBoard };
+  return { getBoard, placeMarker, printBoard };
 }
 
 function Cell() {
   let value = " ";
 
-  const playerChoice = (player) => {
+  const setValue = (player) => {
     value = player;
   };
 
   const getValue = () => value;
 
   return {
-    playerChoice,
+    setValue,
     getValue,
   };
 }
@@ -52,7 +52,7 @@ function GameController(
   playerOneName = "Player One",
   playerTwoName = "Player Two",
 ) {
-  const board = Gameboard();
+  const board = GameBoard();
 
   const players = [
     {
@@ -77,14 +77,7 @@ function GameController(
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
-  const printWinningRound = () => {
-    board.printBoard();
-    console.log(
-      `Congratulations, ${getActivePlayer().name} wins in the ${winningScenario()}!`,
-    );
-  };
-
-  const winningScenario = () => {
+  const findWinningLine = () => {
     const winCase = {
       "top row": [
         [0, 0],
@@ -128,6 +121,8 @@ function GameController(
       ],
     };
 
+    // checks if the board value matches every cell coordinate (value)
+    // from any winning line (key) in the winCase object
     for (const [key, array] of Object.entries(winCase)) {
       if (
         array.every(
@@ -141,22 +136,40 @@ function GameController(
     return null; // No winning scenario
   };
 
+  const printWinningRound = () => {
+    board.printBoard();
+    console.log(
+      `Congratulations, ${getActivePlayer().name} wins in the ${findWinningLine()}!`,
+    );
+  };
+
+  const tieGame = () => {
+    const isBoardFull = board
+      .getBoard()
+      .every((row) => row.every((cell) => cell.getValue() !== " "));
+
+    return isBoardFull;
+  };
+
+  const printTieGame = () => {
+    board.printBoard();
+    console.log("Nobody wins! It's a cats game (tie game)");
+  };
+
   const playRound = (row, column) => {
     console.log(
       `${getActivePlayer().name}'s chooses to play ${getActivePlayer().token} into [${row}, ${column}]`,
     );
 
-    const isValidMove = board.placeSelection(
-      row,
-      column,
-      getActivePlayer().token,
-    );
+    const isValidMove = board.placeMarker(row, column, getActivePlayer().token);
 
     if (!isValidMove) {
       return;
     } else {
-      if (winningScenario()) {
+      if (findWinningLine()) {
         printWinningRound();
+      } else if (tieGame()) {
+        printTieGame();
       } else {
         switchPlayerTurn();
         printNewRound();
