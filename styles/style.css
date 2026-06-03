@@ -1,0 +1,44 @@
+body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: Tahoma, Verdana, Geneva, sans-serif;
+    font-size: 12pt;
+    justify-content: center;
+    margin: 0;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 96vh;
+    justify-content: center;
+}
+
+.board {
+  display: grid;
+  height: 600px;
+  width: 600px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  padding: 2px;
+  background-color: white;
+}
+
+.cell {
+  display: flex;
+  height: 196px;
+  width: 196px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 2rem;
+  border: 1px solid gray;
+  background: black;
+  cursor: pointer;
+  border-radius: 20px;
+}

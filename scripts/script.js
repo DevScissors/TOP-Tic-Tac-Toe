@@ -204,15 +204,44 @@ function GameController(
 
     // ---- INITIALIZATION ----
     printNewRound();
+  };
 
-    return {
-      playRound,
-      getActivePlayer,
-    };
+  return {
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard,
   };
 }
 
 // ============================================
-// GAME INSTANCE
+// GAME DISPLAY
 // ============================================
-const game = GameController();
+
+function ScreenController() {
+  const game = GameController();
+  const gameBoardDiv = document.querySelector(".board");
+  const playerNamesDiv = document.querySelector(".player-names");
+
+  const updateBoard = () => {
+    gameBoardDiv.textContent = "";
+
+    const board = game.getBoard();
+    const activePlayer = game.getActivePlayer();
+
+    playerNamesDiv.textContent = `${activePlayer.name}'s turn...`;
+
+    board.forEach((row) => {
+      row.forEach((cell, index) => {
+        const square = document.createElement("div");
+        square.classList.add("cell");
+        square.dataset.column = index;
+        square.textContent = cell.getValue();
+        gameBoardDiv.appendChild(square);
+      });
+    });
+  };
+
+  updateBoard();
+}
+
+ScreenController();
