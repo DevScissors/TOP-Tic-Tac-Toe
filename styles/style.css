@@ -37,8 +37,10 @@ body {
   align-items: center;
   text-align: center;
   font-size: 2rem;
-  border: 1px solid gray;
-  background: black;
+  border: 1px solid lightgray;
+  background: gray;
   cursor: pointer;
   border-radius: 20px;
+  color: lightgray;
+  font-size: 8em;
 }

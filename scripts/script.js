@@ -153,10 +153,10 @@ function GameController(
   const tieGame = () => board.isBoardFull() && findWinningLine() === null;
 
   // ---- OUTPUT & DISPLAY ----
-  const printNewRound = () => {
-    board.printBoard();
-    console.log(`${getActivePlayer().name}'s turn.`);
-  };
+  // const printNewRound = () => {
+  //   board.printBoard();
+  //   console.log(`${getActivePlayer().name}'s turn.`);
+  // };
 
   const printWinningRound = () => {
     board.printBoard();
@@ -222,7 +222,7 @@ function ScreenController() {
   const gameBoardDiv = document.querySelector(".board");
   const playerNamesDiv = document.querySelector(".player-names");
 
-  const updateBoard = () => {
+  const updateBoard = (row, column) => {
     gameBoardDiv.textContent = "";
 
     const board = game.getBoard();
@@ -231,15 +231,24 @@ function ScreenController() {
     playerNamesDiv.textContent = `${activePlayer.name}'s turn...`;
 
     board.forEach((row) => {
-      row.forEach((cell, index) => {
-        const square = document.createElement("div");
+      row.forEach((column) => {
+        const square = document.createElement("button");
+        square.setAttribute("data-index", crypto.randomUUID());
         square.classList.add("cell");
-        square.dataset.column = index;
-        square.textContent = cell.getValue();
         gameBoardDiv.appendChild(square);
       });
     });
   };
+
+  function clickHandlerBoard() {
+    if (game.placeMarker(row, column, activePlayer.token)) {
+      return alert("Square is already selected!");
+    }
+
+    game.playRound(row, column, activePlayer.token);
+    updateBoard();
+  }
+  gameBoardDiv.addEventListener("click", clickHandlerBoard);
 
   updateBoard();
 }
