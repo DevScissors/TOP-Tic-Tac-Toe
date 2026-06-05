@@ -222,7 +222,7 @@ function ScreenController() {
   const gameBoardDiv = document.querySelector(".board");
   const playerNamesDiv = document.querySelector(".player-names");
 
-  const updateBoard = (row, column) => {
+  const updateBoard = () => {
     gameBoardDiv.textContent = "";
 
     const board = game.getBoard();
@@ -236,19 +236,25 @@ function ScreenController() {
         square.setAttribute("data-index", crypto.randomUUID());
         square.classList.add("cell");
         gameBoardDiv.appendChild(square);
+
+        function clickHandlerBoard(e) {
+          const selectedSquare = e.target.dataset.square;
+          if (game.placeMarker(selectedSquare, activePlayer.token)) {
+            return alert("Square is already selected!");
+          }
+
+          game.playRound(selectedSquare, activePlayer.token);
+          updateBoard();
+        }
+
+        return clickHandlerBoard;
       });
     });
   };
 
-  function clickHandlerBoard() {
-    if (game.placeMarker(row, column, activePlayer.token)) {
-      return alert("Square is already selected!");
-    }
+  const clickHandler = updateBoard();
 
-    game.playRound(row, column, activePlayer.token);
-    updateBoard();
-  }
-  gameBoardDiv.addEventListener("click", clickHandlerBoard);
+  gameBoardDiv.addEventListener("click", clickHandler);
 
   updateBoard();
 }
