@@ -84,7 +84,7 @@ function GameBoard() {
 
   const placeMarker = (row, column, player) => {
     if (board[row][column].getValue() !== " ") {
-      console.log("Square has already been selected");
+      alert("Square has already been selected");
       return false;
     }
     board[row][column].setValue(player);
@@ -200,10 +200,10 @@ function GameController(
       return;
     }
     switchPlayerTurn();
-    printNewRound();
+    // printNewRound();
 
     // ---- INITIALIZATION ----
-    printNewRound();
+    // printNewRound();
   };
 
   return {
@@ -219,6 +219,7 @@ function GameController(
 
 function ScreenController() {
   const game = GameController();
+  const boardControl = GameBoard();
   const gameBoardDiv = document.querySelector(".board");
   const playerNamesDiv = document.querySelector(".player-names");
 
@@ -230,26 +231,28 @@ function ScreenController() {
 
     playerNamesDiv.textContent = `${activePlayer.name}'s turn...`;
 
-    board.forEach((row) => {
-      row.forEach((column) => {
+    board.forEach((row, index) => {
+      let boardRow = index;
+      row.forEach((cell, index) => {
+        let boardCol = index;
+        let boardCell = `(${boardRow}, ${boardCol})`;
         const square = document.createElement("button");
-        square.setAttribute("data-index", crypto.randomUUID());
+        square.setAttribute("data-row", boardRow);
+        square.setAttribute("data-column", boardCol);
         square.classList.add("cell");
+        square.textContent = cell.getValue();
         gameBoardDiv.appendChild(square);
-
-        function clickHandlerBoard(e) {
-          const selectedSquare = e.target.dataset.square;
-          if (game.placeMarker(selectedSquare, activePlayer.token)) {
-            return alert("Square is already selected!");
-          }
-
-          game.playRound(selectedSquare, activePlayer.token);
-          updateBoard();
-        }
-
-        return clickHandlerBoard;
       });
     });
+    function clickHandlerBoard(e) {
+      const selectedRow = e.target.dataset.row;
+      const selectedCol = e.target.dataset.column;
+
+      game.playRound(selectedRow, selectedCol, activePlayer.token);
+      updateBoard();
+    }
+
+    return clickHandlerBoard;
   };
 
   const clickHandler = updateBoard();
