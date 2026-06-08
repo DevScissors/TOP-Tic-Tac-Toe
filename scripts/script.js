@@ -108,31 +108,95 @@ function GameBoard() {
 // ============================================
 // GAME CONTROLLER FACTORY
 // ============================================
-function GameController(
-  playerOneName = "Player One",
-  playerTwoName = "Player Two",
-) {
+function GameController() {
   const board = GameBoard();
 
-  const players = [
+  //   const playerNamesDiv = document.querySelector("player-names");
+  //   const playerOneText = document.querySelector("#playerOne");
+  //   const editPlayerOne = document.querySelector("player-one-edit");
+  //   const playerTwoText = document.querySelector("#playerTwo");
+  //   const editPlayerTwo = document.querySelector("player-two-edit");
+
+  //   editPlayerOne.addEventListener("click", () => {
+  //     const playerOneInput = document.createElement("input");
+  //     playerOneInput.type = "text";
+  //     playerOneInput.value = playerOneText.innerText;
+
+  //     playerNamesDiv.replaceChild(playerOneInput, playerOneText);
+  //     playerOneInput.focus();
+
+  //     const saveContent = () => {
+  //       playerOneText.innerText = playerOneInput.value;
+  //       playerNamesDiv.replaceChild(playerOneText, playerOneInput);
+  //     };
+
+  //     playerOneInput.addEventListener("blur", saveContent);
+  //     playerOneInput.addEventListener("keypress", (e) => {
+  //       if (e.key === "Enter") {
+  //         saveContent();
+  //       }
+  //     });
+  //   });
+
+  //   editPlayerTwo.addEventListener("click", () => {
+  //     const playerTwoInput = document.createElement("input");
+  //     playerTwoInput.type = "text";
+  //     playerTwoInput.value = playerOneText.innerText;
+
+  //     playerNamesDiv.replaceChild(playerTwoInput, playerOneText);
+  //     playerTwoInput.focus();
+
+  //     const saveContent = () => {
+  //       playerOneText.innerText = playerInput.value;
+  //       playerNamesDiv.replaceChild(playerOneText, playerTwoInput);
+  //     };
+
+  //     playerTwoInput.addEventListener("blur", saveContent);
+  //     playerTwoInput.addEventListener("keypress", (e) => {
+  //       if (e.key === "Enter") {
+  //         saveContent();
+  //       }
+  //     });
+  //   });
+  // };
+
+  const playerNamesArr = [
     {
-      name: playerOneName,
+      name: "Player One",
       token: "X",
     },
     {
-      name: playerTwoName,
+      name: "Player Two",
       token: "O",
     },
   ];
 
-  let activePlayer = players[0];
+  const playerNames = (playerOneName, playerTwoName) => {
+    if (playerOneName !== undefined || playerTwoName !== undefined) {
+      playerNamesArr[0].name =
+        playerOneName && playerOneName.trim() !== ""
+          ? playerOneName.trim()
+          : "Player One";
+      playerNamesArr[1].name =
+        playerTwoName && playerTwoName.trim() !== ""
+          ? playerTwoName.trim()
+          : "Player Two";
+    }
+    return playerNamesArr;
+  };
+
+  let activePlayer = playerNamesArr[0];
+
   let gameOver = false;
 
   // ---- STATE & GETTERS ----
   const getActivePlayer = () => activePlayer;
 
   const switchPlayerTurn = () => {
-    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    activePlayer =
+      activePlayer === playerNamesArr[0]
+        ? playerNamesArr[1]
+        : playerNamesArr[0];
   };
 
   // ---- WIN CONDITION CHECKS ----
@@ -153,22 +217,13 @@ function GameController(
   const tieGame = () => board.isBoardFull() && findWinningLine() === null;
 
   // ---- OUTPUT & DISPLAY ----
-  // const printNewRound = () => {
-  //   board.printBoard();
-  //   console.log(`${getActivePlayer().name}'s turn.`);
-  // };
 
-  const printWinningRound = () => {
-    board.printBoard();
-    console.log(
-      `Congratulations, ${getActivePlayer().name} wins in the ${findWinningLine()}!`,
-    );
-  };
+  // const playerNames = () =>
 
-  const printTieGame = () => {
-    board.printBoard();
-    console.log("Nobody wins! It's a cats game (tie game)");
-  };
+  const printWinningRound = () =>
+    `Congratulations, ${getActivePlayer().name} wins in the ${findWinningLine()}!`;
+
+  const printTieGame = () => "Nobody wins! It's a cats game (tie game)";
 
   // ---- GAME ACTIONS ----
   const playRound = (row, column) => {
@@ -177,10 +232,6 @@ function GameController(
     }
 
     const currentPlayer = getActivePlayer();
-
-    console.log(
-      `${currentPlayer.name}'s chooses to play ${currentPlayer.token} into [${row}, ${column}]`,
-    );
 
     const isValidMove = board.placeMarker(row, column, currentPlayer.token);
 
@@ -208,6 +259,7 @@ function GameController(
 
   return {
     playRound,
+    playerNames,
     getActivePlayer,
     getBoard: board.getBoard,
   };
@@ -221,7 +273,7 @@ function ScreenController() {
   const game = GameController();
   const boardControl = GameBoard();
   const gameBoardDiv = document.querySelector(".board");
-  const playerNamesDiv = document.querySelector(".player-names");
+  const playersTurnDiv = document.querySelector(".players-turn");
 
   const updateBoard = () => {
     gameBoardDiv.textContent = "";
@@ -229,7 +281,7 @@ function ScreenController() {
     const board = game.getBoard();
     const activePlayer = game.getActivePlayer();
 
-    playerNamesDiv.textContent = `${activePlayer.name}'s turn...`;
+    playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
 
     board.forEach((row, index) => {
       let boardRow = index;
@@ -259,6 +311,71 @@ function ScreenController() {
 
   gameBoardDiv.addEventListener("click", clickHandler);
 
+  // const editPlayerNames = () => {
+  const playerOneText = document.querySelector("#playerOne");
+  const editPlayerOne = document.querySelector(".player-one-edit");
+  const playerTwoText = document.querySelector("#playerTwo");
+  const editPlayerTwo = document.querySelector(".player-two-edit");
+
+  editPlayerOne.addEventListener("click", () => {
+    const playerOneInput = document.createElement("input");
+    playerOneInput.type = "text";
+    playerOneInput.value = playerOneText.innerText;
+
+    playerOneText.replaceWith(playerOneInput);
+    playerOneInput.focus();
+
+    const saveContent = () => {
+      playerOneInput.value !== ""
+        ? (playerOneText.innerText = playerOneInput.value)
+        : (playerOneText.innerText = "Player One");
+      playerOneInput.replaceWith(playerOneText);
+      game.playerNames(playerOneText.innerText, playerTwoText.innerText);
+      updateBoard();
+    };
+
+    playerOneInput.addEventListener("blur", saveContent);
+    playerOneInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        saveContent();
+      }
+    });
+  });
+
+  editPlayerTwo.addEventListener("click", () => {
+    const playerTwoInput = document.createElement("input");
+    playerTwoInput.type = "text";
+    playerTwoInput.value = playerTwoText.innerText;
+
+    playerTwoText.replaceWith(playerTwoInput);
+    playerTwoInput.focus();
+
+    const saveContent = () => {
+      playerTwoInput.value !== ""
+        ? (playerTwoText.innerText = playerTwoInput.value)
+        : (playerTwoText.innerText = "Player Two");
+      playerTwoInput.replaceWith(playerTwoText);
+      game.playerNames(playerOneText.innerText, playerTwoText.innerText);
+      updateBoard();
+    };
+
+    playerTwoInput.addEventListener("blur", saveContent);
+    playerTwoInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        saveContent();
+      }
+    });
+  });
+
+  if (playerOneText.innerText.trim() === "") {
+    playerOneText.innerText = "Player One";
+  }
+
+  if (playerTwoText.innerText.trim() === "") {
+    playerTwoText.innerText = "Player Two";
+  }
+
+  game.playerNames(playerOneText.innerText, playerTwoText.innerText);
   updateBoard();
 }
 

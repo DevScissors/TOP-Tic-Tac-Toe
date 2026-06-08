@@ -18,6 +18,35 @@ body {
     justify-content: center;
 }
 
+.player-names {
+  position: relative;
+  top: -10%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.player-one-wrapper,
+.player-two-wrapper {
+  display: flex;
+  gap: 15px;
+  height: fit-content;
+}
+
+.player-one,
+.player-two {
+  font-size: 24px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid black;
+}
+
+.player-one-edit,
+.player-two-edit {
+  align-self: center;
+}
+
 .board {
   display: grid;
   height: 600px;
