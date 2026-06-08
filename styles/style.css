@@ -1,29 +1,67 @@
-body {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    font-family: Tahoma, Verdana, Geneva, sans-serif;
-    font-size: 12pt;
-    justify-content: center;
-    margin: 0;
-    min-height: 100vh;
-    padding: 0;
-}
-
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 96vh;
-    justify-content: center;
+}
+
+.title {
+  font-size: 3em;
+  padding: 30px 0;
+}
+
+.start-game-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
+  font-size: 1.5em;
+  align-items: center;
+}
+
+.start-game-form {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.start-game-player-one,
+.start-game-player-two {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+input {
+  font-size: x-large;
+}
+
+.start-btn {
+  justify-self: center;
+  height: fit-content;
+  padding: 10px;
+  font-size: x-large;
+}
+
+.restart-btn {
+  display: none;
+}
+
+.main-game-wrapper {
+  display: none;
+  flex-direction: column;
+  gap: 50px;
 }
 
 .player-names {
-  position: relative;
-  top: -10%;
   display: flex;
   justify-content: space-between;
-  width: 100%;
+}
+
+.players-turn {
+  text-align: center;
+  font-size: 1.5em;
 }
 
 .player-one-wrapper,
@@ -49,27 +87,24 @@ body {
 
 .board {
   display: grid;
-  height: 600px;
-  width: 600px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 2px;
+  gap: 1.5em;
   padding: 2px;
   background-color: white;
+  height: 70vmin;
+  width: 70vmin;
 }
 
 .cell {
   display: flex;
-  height: 196px;
-  width: 196px;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 2rem;
+  font-size: clamp(3rem, 15vw, 10rem);
   border: 1px solid lightgray;
   background: gray;
   cursor: pointer;
   border-radius: 20px;
   color: lightgray;
-  font-size: 8em;
 }

@@ -10,19 +10,42 @@
 
   <body>
     <div class="container">
-      <div class="player-names">
-        <div class="player-one-wrapper">
-          <div id="playerOne" class="player-one">Player One</div>
-          <img src="./images/edit.svg" class="player-one-edit" height="20px" />
-        </div>
-        <div class="player-two-wrapper">
-          <div id="playerTwo" class="player-two">Player Two</div>
-          <img src="./images/edit.svg" class="player-two-edit" height="20px" />
-        </div>
+      <div class="title">TIC-TAC-TOE</div>
+      <div class="start-game-wrapper">
+        <form class="start-game-form">
+          <div class="start-game-player-one">
+            <label for="playerOneInput">Player 1</label>
+            <input
+              id="playerOneInput"
+              class="player-one-input"
+              maxlength="25"
+            />
+          </div>
+          <div class="start-game-player-two">
+            <label for="playerTwoInput">Player 2</label>
+            <input
+              id="playerTwoInput"
+              class="player-two-input"
+              maxlength="25"
+            />
+          </div>
+        </form>
+        <button form="start-game-form" class="start-btn">Start Game</button>
       </div>
-      <div class="players-turn"></div>
-      <div class="board"></div>
-      <div class="results"></div>
+      <div class="main-game-wrapper">
+        <div class="player-names">
+          <div class="player-one-wrapper">
+            <div id="playerOne" class="player-one"></div>
+          </div>
+          <div class="player-two-wrapper">
+            <div id="playerTwo" class="player-two"></div>
+          </div>
+        </div>
+        <div class="players-turn"></div>
+        <button class="restart-btn">Restart</button>
+        <div class="board"></div>
+        <div class="results"></div>
+      </div>
     </div>
   </body>
 </html>
