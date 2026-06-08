@@ -61,8 +61,7 @@ input {
 .player-names {
   display: flex;
   justify-content: space-between;
-  min-width: 400px;
-  width: stretch;
+  width: 100%;
 }
 
 .players-turn {
