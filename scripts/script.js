@@ -2,7 +2,7 @@
 // CELL FACTORY
 // ============================================
 function Cell() {
-  let value = " ";
+  let value = "";
 
   const setValue = (player) => {
     value = player;
@@ -10,7 +10,7 @@ function Cell() {
 
   const getValue = () => value;
 
-  const resetValue = () => value === " ";
+  const resetValue = () => (value = "");
 
   return {
     setValue,
@@ -83,7 +83,7 @@ function GameBoard() {
   const getBoard = () => board;
 
   const placeMarker = (row, column, player) => {
-    if (board[row][column].getValue() !== " ") {
+    if (board[row][column].getValue() !== "") {
       alert("Square has already been selected");
       return false;
     }
@@ -92,7 +92,7 @@ function GameBoard() {
   };
 
   const isBoardFull = () =>
-    board.every((row) => row.every((cell) => cell.getValue() !== " "));
+    board.every((row) => row.every((cell) => cell.getValue() !== ""));
 
   const printBoard = () => {
     const boardWithCellValues = board.map((row) =>
@@ -213,6 +213,7 @@ function GameController() {
   const resetRound = () => {
     board.resetBoard();
     activePlayer = playerNamesArr[0];
+    gameOver = false;
   };
 
   return {
@@ -249,22 +250,37 @@ function ScreenController() {
 
   const startGame = () => {
     startGameWrapper.style.display = "none";
+    restartBtn.style.display = "none";
     mainGameWrapper.style.display = "flex";
     gameBoardDiv.style.display = "grid";
     playersTurnDiv.style.display = "block";
 
     game.playerNames(playerOneInput.value, playerTwoInput.value);
-    playerOneDiv.innerText = playerOneInput.value;
-    playerTwoDiv.innerText = playerTwoInput.value;
+    if (playerOneInput.value === "") {
+      playerOneDiv.innerText = "Player One";
+    } else {
+      playerOneDiv.innerText = playerOneInput.value;
+    }
+
+    if (playerTwoInput.value === "") {
+      playerTwoDiv.innerText = "Player Two";
+    } else {
+      playerTwoDiv.innerText = playerTwoInput.value;
+    }
+
     updateBoard();
 
     return game;
   };
 
   const restartGame = () => {
+    mainGameWrapper.style.display = "none";
     startGameWrapper.style.display = "flex";
-    // mainGameWrapper.style.display = "none";
     game.resetRound();
+    playerOneInput.value = "";
+    playerTwoInput.value = "";
+    playerOneDiv.innerText = "Player One";
+    playerTwoDiv.innerText = "Player Two";
     updateBoard();
 
     return game;
@@ -281,9 +297,10 @@ function ScreenController() {
 
     if (!game.findWinningLine() && !game.tieGame()) {
       playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+    } else {
+      gameBoardDiv.style.marginTop = "-9px";
+      restartBtn.style.display = "block";
     }
-
-    restartBtn.style.display = "block";
 
     board.forEach((row, index) => {
       let boardRow = index;
@@ -291,6 +308,7 @@ function ScreenController() {
         let boardCol = index;
         let boardCell = `(${boardRow}, ${boardCol})`;
         const square = document.createElement("button");
+        square.type = "button";
         square.setAttribute("data-row", boardRow);
         square.setAttribute("data-column", boardCol);
         square.classList.add("cell");
