@@ -83,11 +83,11 @@ function GameBoard() {
   const getBoard = () => board;
 
   const placeMarker = (row, column, player) => {
-    if (board[row][column].getValue() !== "") {
-      alert("Square has already been selected");
+    const targetCell = board[row][column];
+    if (targetCell.getValue() !== "") {
       return false;
     }
-    board[row][column].setValue(player);
+    targetCell.setValue(player);
     return true;
   };
 
@@ -141,10 +141,8 @@ function GameController() {
   };
 
   let activePlayer = playerNamesArr[0];
-
   let gameOver = false;
 
-  // ---- STATE & GETTERS ----
   const getActivePlayer = () => activePlayer;
 
   const switchPlayerTurn = () => {
@@ -154,7 +152,6 @@ function GameController() {
         : playerNamesArr[0];
   };
 
-  // ---- WIN CONDITION CHECKS ----
   const findWinningLine = () => {
     for (const [key, array] of Object.entries(WIN_PATTERNS)) {
       if (
@@ -171,43 +168,31 @@ function GameController() {
 
   const tieGame = () => board.isBoardFull() && findWinningLine() === null;
 
-  // ---- OUTPUT & DISPLAY ----
-  const printWinningRound = () => {
-    const winningText = document.querySelector(".players-turn");
-    winningText.textContent = `Congratulations, ${getActivePlayer().name} wins in the ${findWinningLine()}!`;
-  };
-
-  const printTieGame = () => {
-    const tieText = document.querySelector(".players-turn");
-    tieText.textContent = "Nobody wins! It's a cats game (tie game)";
-  };
-
-  // ---- GAME ACTIONS ----
   const playRound = (row, column) => {
     if (gameOver) {
-      return;
+      return { status: "gameOver" };
     }
 
     const currentPlayer = getActivePlayer();
-
     const isValidMove = board.placeMarker(row, column, currentPlayer.token);
 
     if (!isValidMove) {
-      return;
+      return { status: "invalid" };
     }
 
-    if (findWinningLine()) {
+    const winningLine = findWinningLine();
+    if (winningLine) {
       gameOver = true;
-      printWinningRound();
-      return;
+      return { status: "win", winningLine };
     }
 
     if (tieGame()) {
       gameOver = true;
-      printTieGame();
-      return;
+      return { status: "tie" };
     }
+
     switchPlayerTurn();
+    return { status: "continue" };
   };
 
   const resetRound = () => {
@@ -221,9 +206,6 @@ function GameController() {
     tieGame,
     playRound,
     playerNames,
-    printTieGame,
-    printWinningRound,
-    tieGame,
     resetRound,
     getActivePlayer,
     getBoard: board.getBoard,
@@ -233,10 +215,8 @@ function GameController() {
 // ============================================
 // GAME DISPLAY
 // ============================================
-
 function ScreenController() {
   const game = GameController();
-  const boardControl = GameBoard();
   const mainGameWrapper = document.querySelector(".main-game-wrapper");
   const gameBoardDiv = document.querySelector(".board");
   const playersTurnDiv = document.querySelector(".players-turn");
@@ -248,89 +228,108 @@ function ScreenController() {
   const startBtn = document.querySelector(".start-btn");
   const restartBtn = document.querySelector(".restart-btn");
 
-  const startGame = () => {
-    startGameWrapper.style.display = "none";
+  const showStartScreen = () => {
+    mainGameWrapper.style.display = "none";
+    startGameWrapper.style.display = "flex";
     restartBtn.style.display = "none";
+  };
+
+  const showGameScreen = () => {
+    startGameWrapper.style.display = "none";
     mainGameWrapper.style.display = "flex";
     gameBoardDiv.style.display = "grid";
     playersTurnDiv.style.display = "block";
+  };
 
+  const getPlayerLabel = (value, fallback) =>
+    value && value.trim() !== "" ? value.trim() : fallback;
+
+  const startGame = () => {
+    showGameScreen();
     game.playerNames(playerOneInput.value, playerTwoInput.value);
-    if (playerOneInput.value === "") {
-      playerOneDiv.innerText = "Player One";
-    } else {
-      playerOneDiv.innerText = playerOneInput.value;
-    }
-
-    if (playerTwoInput.value === "") {
-      playerTwoDiv.innerText = "Player Two";
-    } else {
-      playerTwoDiv.innerText = playerTwoInput.value;
-    }
-
+    playerOneDiv.innerText = getPlayerLabel(playerOneInput.value, "Player One");
+    playerTwoDiv.innerText = getPlayerLabel(playerTwoInput.value, "Player Two");
     updateBoard();
-
     return game;
   };
 
   const restartGame = () => {
-    mainGameWrapper.style.display = "none";
-    startGameWrapper.style.display = "flex";
+    showStartScreen();
     game.resetRound();
     playerOneInput.value = "";
     playerTwoInput.value = "";
     playerOneDiv.innerText = "Player One";
     playerTwoDiv.innerText = "Player Two";
     updateBoard();
-
     return game;
   };
 
-  startBtn.addEventListener("click", () => startGame());
-  restartBtn.addEventListener("click", () => restartGame());
+  const handleInvalidMove = () => {
+    alert("Square has already been selected");
+  };
 
   const updateBoard = () => {
-    gameBoardDiv.textContent = "";
-
     const board = game.getBoard();
     const activePlayer = game.getActivePlayer();
+    const winningLine = game.findWinningLine();
+    const isTie = game.tieGame();
 
-    if (!game.findWinningLine() && !game.tieGame()) {
-      playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
-    } else {
-      gameBoardDiv.style.marginTop = "-9px";
-      restartBtn.style.display = "block";
-    }
+    gameBoardDiv.textContent = "";
+    gameBoardDiv.style.marginTop = "";
+    restartBtn.style.display = "none";
 
-    board.forEach((row, index) => {
-      let boardRow = index;
-      row.forEach((cell, index) => {
-        let boardCol = index;
-        let boardCell = `(${boardRow}, ${boardCol})`;
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
         const square = document.createElement("button");
         square.type = "button";
-        square.setAttribute("data-row", boardRow);
-        square.setAttribute("data-column", boardCol);
+        square.setAttribute("data-row", rowIndex);
+        square.setAttribute("data-column", columnIndex);
         square.classList.add("cell");
         square.textContent = cell.getValue();
         gameBoardDiv.appendChild(square);
       });
     });
 
-    function clickHandlerBoard(e) {
-      const selectedRow = e.target.dataset.row;
-      const selectedCol = e.target.dataset.column;
-
-      game.playRound(selectedRow, selectedCol, activePlayer.token);
-      updateBoard();
+    if (winningLine) {
+      playersTurnDiv.textContent = `Congratulations, ${activePlayer.name} wins in the ${winningLine}!`;
+      playersTurnDiv.style.marginTop = "-9px";
+      restartBtn.style.display = "block";
+      return;
     }
 
-    return clickHandlerBoard;
+    if (isTie) {
+      playersTurnDiv.textContent = "Nobody wins! It's a cats game (tie game)";
+      playersTurnDiv.style.marginTop = "-9px";
+      restartBtn.style.display = "block";
+      return;
+    }
+
+    playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
   };
 
-  const clickHandler = updateBoard();
+  const clickHandler = (e) => {
+    const selectedRow = e.target.dataset.row;
+    const selectedCol = e.target.dataset.column;
 
+    if (selectedRow === undefined || selectedCol === undefined) {
+      return;
+    }
+
+    const result = game.playRound(Number(selectedRow), Number(selectedCol));
+    if (result.status === "invalid") {
+      handleInvalidMove();
+      return;
+    }
+
+    updateBoard();
+  };
+
+  startBtn.addEventListener("click", () => startGame());
+  restartBtn.addEventListener("click", () => restartGame());
   gameBoardDiv.addEventListener("click", clickHandler);
+
+  showStartScreen();
+  updateBoard();
 }
 
 ScreenController();
