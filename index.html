@@ -12,7 +12,7 @@
     <div class="container">
       <div class="title">TIC-TAC-TOE</div>
       <div class="start-game-wrapper">
-        <form class="start-game-form">
+        <form id="start-game-form" class="start-game-form">
           <div class="start-game-player-one">
             <label for="playerOneInput">Player 1</label>
             <input
@@ -30,7 +30,9 @@
             />
           </div>
         </form>
-        <button form="start-game-form" class="start-btn">Start Game</button>
+        <button type="button" form="start-game-form" class="start-btn">
+          Start Game
+        </button>
       </div>
       <div class="main-game-wrapper">
         <div class="player-names">
@@ -42,7 +44,7 @@
           </div>
         </div>
         <div class="players-turn"></div>
-        <button class="restart-btn">Restart Game</button>
+        <button type="button" class="restart-btn">Restart Game</button>
         <div class="board"></div>
       </div>
     </div>
